@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <title>Easy Cam JS</title>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    </head>
+    <body>
+        <div id="camera_holder">
+            <center><h3>Easy Cam JS</h3><h6>The resolution will automatically adjust depends on the cam.</h6></center>
+            <center style="margin-top: 30px;">
+                <div id="videoContainer"><video id="webcam" autoplay playsinline></video></div>
+                <audio id="snapSound" src="audio/snap.wav" preload = "auto"></audio>
+                <button type="button" class="login100-form-btn" onClick="captureImage()">Capture</button><br /><br />
+                <canvas id="canvas" class="d-none"></canvas>
+            </center>
+        </div>
+
+        <script type="text/javascript" src="easy-cam.js"></script>
+        <script type="text/javascript">
+
+                let constraints = { 
+                        video: { 
+                            width: { ideal: 1920 }, 
+                            height: { ideal: 1080 } 
+                        }
+                    };
+                    
+                (async () => {
+                  let stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+                    let stream_settings = stream.getVideoTracks()[0].getSettings();
+                
+                    // actual width & height of the camera video
+                    let stream_width = stream_settings.width;
+                    let stream_height = stream_settings.height;
+                
+                    $("#webcam").attr("width",(stream_width * 0.25) + "px");
+                    $("#webcam").attr("height",(stream_height * 0.25) + "px");
+                
+                    })()
+                    
+                    const webcamElement = document.getElementById('webcam');
+                    const canvasElement = document.getElementById('canvas');
+                    const snapSoundElement = document.getElementById('snapSound');
+                    const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement);
+                    
+                    webcam.start()
+                       .then(result =>{
+                          console.log("webcam started");
+                       })
+                       .catch(err => {
+                           console.log(err);
+                       });
+
+                    function captureImage(){
+                        var picture = webcam.snap();
+                    }
+
+        </script>
+
+    </body>
+</html>
